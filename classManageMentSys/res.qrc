@@ -1,0 +1,36 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/close.png</file>
+        <file>res/engineer.png</file>
+        <file>res/min.png</file>
+        <file>res/mysql.png</file>
+        <file>res/red1.png</file>
+        <file>res/title_h.png</file>
+        <file>res/blue2.png</file>
+        <file>res/close2.png</file>
+        <file>res/max2.png</file>
+        <file>res/min1.png</file>
+        <file>res/set.png</file>
+        <file>res/huanyuan.png</file>
+        <file>res/biaoge.png</file>
+        <file>res/daoru-tianchong.png</file>
+        <file>res/tuichu.png</file>
+        <file>res/yonghu.png</file>
+        <file>res/classInfo.png</file>
+        <file>res/classRoom.png</file>
+        <file>res/callRoom.png</file>
+        <file>res/message.png</file>
+        <file>res/bianji.png</file>
+        <file>res/DownPage.png</file>
+        <file>res/gaojisousuo.png</file>
+        <file>res/shaixuan.png</file>
+        <file>res/shanchu.png</file>
+        <file>res/UpPage.png</file>
+        <file>res/xinjian.png</file>
+        <file>res/unchecked.png</file>
+        <file>res/checked.png</file>
+        <file>res/shenHe.png</file>
+        <file>res/studentInfo.png</file>
+        <file>res/teacherInfo.png</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,165 @@
+QPushButton
+{
+	font-family:'Microsoft YaHei';font-size:15px;
+	background-color:transparent;color:rgb(255,255,255);
+	border-radius:20px;
+}
+QPushButton::hover
+{
+	background-color:rgb(28,102,220);
+}
+QPushButton::checked
+{
+	background-color:rgb(28,102,220);
+}
+
+/*设置垂直滚动条基本样式*/
+/*留出20px给上面和下面的箭头*/
+QScrollBar::vertical
+{
+    width:10px;		
+    background:rgba(0,0,0,0%);
+    margin:0px,0px,0px,0px;
+    padding-top:10px;   
+    padding-bottom:10px;
+}
+/*设置滑块的大小样式*/
+QScrollBar::handle::vertical
+{
+    width:10px;		
+    background:rgba(0,0,0,25%);
+    border-radius:4px;   
+    min-height:10;		
+	background-color:rgb(76,136,255);
+}
+/*设置滑块鼠标滑过样式*/
+QScrollBar::handle::vertical::pressed
+{
+    width:10px;
+    background:rgb(53,95,179);   
+    border-radius:4px;
+    min-height:10;
+}
+/*下一行按钮的样式*/
+QScrollBar::add-line::vertical   
+{
+	border:1px;
+	height:10px;	
+	width:10px;
+	subcontrol-position:bottom;
+
+}
+/*下一行按钮的箭头样式*/
+QScrollBar::down-arrow:vertical
+{
+	border:1px;		
+	width: 10px;	
+	height: 10px;	
+	border-image:url(:/image/ICON/arrow-D.png);
+	
+}
+/*下一行按钮的按下样式*/
+QScrollBar::down-arrow:vertical:pressed
+{
+	border:1px;		
+	width: 10px;	
+	height: 10px;	
+	border-image:url(:/image/ICON/arrow-DP.png);
+	
+}
+/*上一行按钮的相关设置，同上*/
+QScrollBar::sub-line::vertical  
+{
+	border:1px;
+	height:10px;	
+	width:10px;
+	subcontrol-position:top;
+
+}
+QScrollBar::up-arrow:vertical
+{
+	border:1px;		
+	width: 10px;	
+	height: 10px;	
+	border-image:url(:/image/ICON/arrow-U.png);
+	
+}
+QScrollBar::up-arrow:vertical:pressed
+{
+	border:1px;		
+	width: 10px;	
+	height: 10px;	
+	border-image:url(:/image/ICON/arrow-UP.png);
+	
+}
+
+QScrollBar::add-page::vertical,QScrollBar::sub-page::vertical  /*当滚动条滚动的时候，上面的部分和下面的部分*/
+{
+    background:rgb(135,177,255);
+    border-radius:4px;
+}
+
+
+
+/*QDateEdit,QTimeEdit样式
+	subcontrol-origin:border;
+    subcontrol-position:top right ;
+	subcontrol-origin:border;
+    subcontrol-position:buttom right;
+	subcontrol-origin:border;
+    subcontrol-position:top right;
+    subcontrol-position:buttom right;
+*/
+/*设置按钮样式，大小，图片*/
+QTimeEdit::up-button,QDateEdit::up-button
+{
+
+    image: url(:/image/ICON/arrow-U.png);
+    width: 20px;
+    height: 15px;        
+}
+QTimeEdit::down-button,QDateEdit::down-button
+{
+
+    image: url(:/image/ICON/arrow-D.png);
+    width: 20px;
+    height: 15px;
+}
+/*按钮按下样式*/
+QTimeEdit::up-button:pressed,QDateEdit::up-button:pressed
+{
+
+    image: url(:/image/ICON/arrow-UP.png);
+    width: 20px;
+    height: 15px;        
+}
+QTimeEdit::down-button:pressed,QDateEdit::down-button:pressed
+{
+
+    image: url(:/image/ICON/arrow-DP.png);
+    width: 20px;
+    height: 15px;
+}
+QComboBox QAbstractItemView
+{
+     border: 1px solid rgb(161,161,161);
+}
+ 
+QComboBox QAbstractItemView::item
+{
+    height: 24px;
+}
+ 
+QComboBox QAbstractItemView::item:selected
+{	
+    background-color: rgba(247, 119, 84);
+}
+
+QComboBox
+{
+	font-family:'Microsoft YaHei';
+	font-size:15px;
+}
+
+
+
