@@ -44,6 +44,8 @@ private slots:
     void newBtnFunc();
     void editUserInfo();
     void editBtnFunc();
+    void on_tableView_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::AdmWin *ui;
     FormUser *UserWin;
@@ -52,7 +54,8 @@ private:
     FormTable *TableStuWin;
     FormExit *ExitWin;
     FormTable *TableTeaWin;
-    UserChan * ChanUser;
+    UserChan *ChanUser;
+    UserChan *shenHe;
     alret   *alretWin;
     UserEdit *EditUser;
     QMySqlQueryModel *model;

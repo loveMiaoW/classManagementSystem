@@ -50,6 +50,8 @@ private slots:
 
     void showPage(const QModelIndex &index);
     void showModel();
+    void showInfo();
+    void newAddWin();
     void editUserInfo();
 private:
     Ui::MainWindow *ui;
@@ -59,10 +61,13 @@ private:
     FormUser *UserWin;
     FormTable *TableWin;
     FormUser *classInfo;
+    FormUser *applyInfo;
+    FormUser *caoZuo;
     FormExit *ExitWin;
     UserChan * ChanUser;
     alret   *alretWin;
     UserEdit *EditUser;
+    UserEdit *addWin;
     AdmWin *admwin;
 public:
     static QStringList UserInfo;
@@ -71,6 +76,7 @@ public:
     bool isMaxWindow;
     bool isHalfWindow;
     static int Mark;
+    static int index;
     static QString Table;
     static int userType;
 };

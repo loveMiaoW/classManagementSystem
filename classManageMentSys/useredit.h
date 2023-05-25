@@ -23,12 +23,12 @@ private:
 public:
 
 signals:
-
+    void sendSig();
 
 
 private slots:
     void SaveBtnC();
-
+    void saveApply();
     void on_CancleBtn_clicked();
 
 private:

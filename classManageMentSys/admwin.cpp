@@ -1,11 +1,14 @@
 #include "admwin.h"
 #include "ui_admwin.h"
 #include <QDesktopWidget>
+#include <QMessageBox>
 #include <QMouseEvent>
 #include <QDebug>
 
 int AdmWin::Mark = 0;
 int AdmWin::Flag = 0;
+QString UserChan::str1 = "";
+QString UserChan::str2 = "";
 AdmWin::AdmWin(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::AdmWin)
@@ -24,6 +27,9 @@ AdmWin::AdmWin(QWidget *parent) :
     ExitWin = new FormExit;
 
     ChanUser = new UserChan;
+    shenHe = new UserChan;
+    ChanUser->UserChanInit();
+    shenHe->shenHeUser();
     alretWin = new alret;
     EditUser = new UserEdit;
     useradd = new userAdd;
@@ -1062,4 +1068,20 @@ void AdmWin::showModel()
 void AdmWin::editUserInfo()
 {
     ChanUser->show();
+}
+
+void AdmWin::on_tableView_doubleClicked(const QModelIndex &index)
+{
+    QAbstractItemModel *Imodel=ui->tableView->model();
+
+    QModelIndex Iindex = Imodel->index(index.row(),0);  //index.row()为算选择的行号。1为所选中行的第一列。。
+    QModelIndex Iindex2 = Imodel->index(index.row(),4);
+    QVariant datatemp=Imodel->data(Iindex);
+    QVariant datatemp2=Imodel->data(Iindex2);
+    QString name=Imodel->data(index).toString();        //name即为所选择行的第一列的值
+    QString name2=Imodel->data(Iindex2).toString();
+    shenHe->setEditText(name,name2);
+    UserChan::str1 = name;
+    UserChan::str2 = name2;
+    shenHe->show();
 }

@@ -2,6 +2,13 @@
 #include "ui_useredit.h"
 #include <QMouseEvent>//用到QMouseEvent就要包含这个头文件
 #include <QButtonGroup>
+#include "mainwindow.h"
+#include <QDebug>
+#include <QSqlDatabase>
+#include <QMessageBox>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QSqlQueryModel>
 UserEdit::UserEdit(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::UserEdit)
@@ -53,10 +60,11 @@ void UserEdit::mouseReleaseEvent(QMouseEvent *event)
 }
 
 
+
 void UserEdit::addWinInit()
 {
     setWindowIcon(QIcon(":/res/engineer.png"));//设置软件图标
-    setWindowTitle(tr("添加用户"));//设置软件标题
+    setWindowTitle(tr("使用申请"));//设置软件标题
     this->setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);//去掉标题栏
     this->setAttribute(Qt::WA_TranslucentBackground);//设置窗口背景透明
     this->setFixedSize(470,360);//设置窗口为固定大小
@@ -69,27 +77,27 @@ void UserEdit::addWinInit()
 
     ui->UserLab->setGeometry(50,80,80,30);
     ui->UserLab->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-    ui->UserLab->setText(tr("编号："));
-    ui->AccountLab->setGeometry(50,140,80,30);
+    ui->UserLab->setText(tr("申请时间："));
+    ui->AccountLab->setGeometry(5000,140,80,30);
     ui->AccountLab->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
     ui->AccountLab->setText(tr("账户类型："));
-    ui->PasswordLab->setGeometry(5000,140,80,30);
+    ui->PasswordLab->setGeometry(50,140,80,30);
     ui->PasswordLab->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-    ui->PasswordLab->setText(tr("原始密码："));
+    ui->PasswordLab->setText(tr("申请教室："));
     ui->NewPassLab->setGeometry(50,200,80,30);
     ui->NewPassLab->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-    ui->NewPassLab->setText(tr("新密码："));
-    ui->SurePassLab->setGeometry(50,240,80,30);
+    ui->NewPassLab->setText(tr("申请原因："));
+    ui->SurePassLab->setGeometry(5000,240,80,30);
     ui->SurePassLab->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
     ui->SurePassLab->setText(tr("确认密码："));
     ui->label->setGeometry(10,0,80,30);
-    ui->label->setText(tr("添加用户"));
+    ui->label->setText(tr("使用申请"));
 
     ui->UserLineEdit->setGeometry(130,80,250,30);
-    ui->ManRBtn->setGeometry(130,140,90,30);
-    ui->NorRBtn->setGeometry(230,140,90,30);
-    ui->stuRBtn->setGeometry(330,140,90,30);
-    ui->PasswordEdit->setGeometry(5000,160,250,30);
+    ui->ManRBtn->setGeometry(13000,140,90,30);
+    ui->NorRBtn->setGeometry(23000,140,90,30);
+    ui->stuRBtn->setGeometry(33000,140,90,30);
+    ui->PasswordEdit->setGeometry(130,140,250,30);
     ui->NewPassEdit->setGeometry(130,200,250,30);
     ui->SurePassEdit->setGeometry(130,240,250,30);
     ui->SaveBtn->setGeometry(370,310,75,30);
@@ -100,8 +108,8 @@ void UserEdit::addWinInit()
 
     connect(ui->CloseBtn,&QPushButton::clicked,this,&UserEdit::close);//这个牛逼
 
-    ui->PasswordEdit->setEchoMode(QLineEdit::Password);//设置输入时不显示文字，显示特殊字符
-    ui->NewPassEdit->setEchoMode(QLineEdit::Password);
+    //ui->PasswordEdit->setEchoMode(QLineEdit::Password);//设置输入时不显示文字，显示特殊字符
+    //ui->NewPassEdit->setEchoMode(QLineEdit::Password);
     ui->SurePassEdit->setEchoMode(QLineEdit::Password);//设置输入时不显示文字，显示特殊字符
     ui->ManRBtn->setEnabled(true);
     ui->NorRBtn->setEnabled(true);
@@ -138,11 +146,7 @@ void UserEdit::addWinInit()
     ui->stuRBtn->setChecked(1);
 
     //信号与槽
-    connect(ui->SaveBtn,SIGNAL(clicked(bool)),this,SLOT(SaveBtnC()));
-    QButtonGroup *group = new QButtonGroup(this);
-    group->addButton(ui->ManRBtn,0);
-    group->addButton(ui->NorRBtn,1);
-    group->addButton(ui->stuRBtn,2);
+    connect(ui->SaveBtn,SIGNAL(clicked(bool)),this,SLOT(saveApply()));
 }
 
 void UserEdit::editWinInit()
@@ -235,6 +239,31 @@ void UserEdit::editWinInit()
     group->addButton(ui->ManRBtn,0);
     group->addButton(ui->NorRBtn,1);
     group->addButton(ui->stuRBtn,2);
+}
+void UserEdit::saveApply()
+{
+    int index = 7;
+    qDebug()<<"444" << MainWindow::index << " " << MainWindow::UserInfo.at(0) << endl;
+    QString appTime = ui->UserLineEdit->text();
+    QString appClass = ui->PasswordEdit->text();
+    QString appRes = ui->NewPassEdit->text();
+    qDebug() << appTime <<appClass << appRes;
+    QSqlQuery sql;
+    QString strSql = QString("insert into application values('%1','%2','%3','%4','%5','%6');").arg(MainWindow::UserInfo.at(0)).arg(QString("student")).arg(appTime).arg(appClass).arg(appRes).arg(0);
+    //QString strSql = QString("insert into application values('%1','%2','%3','%4','%5','%6','%7');").arg(9).arg("a").arg("b").arg("c").arg("d");
+    bool sqlFlag = sql.exec(strSql);
+    if(sqlFlag == false)
+    {
+        qDebug() << "sqlQure faile" << endl;
+        qDebug() << sql.lastError();
+    }
+    bool ret = sql.seek(0);
+    qDebug() << ret << sqlFlag ;
+    if(sqlFlag == true)
+    {
+        QMessageBox::critical(this,"提交申请","等待管理员审核");
+        this->hide();
+    }
 }
 void UserEdit::SaveBtnC()
 {

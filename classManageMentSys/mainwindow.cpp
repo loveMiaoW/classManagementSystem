@@ -13,10 +13,11 @@
 #include <QDebug>
 #include <QMouseEvent>
 #include <QMessageBox>
-
+#include <QDateTime>
 
 QStringList MainWindow::UserInfo;
 int MainWindow::Mark = 0;
+int MainWindow::index = -1;
 QString MainWindow::Table;
 int MainWindow::userType = -1;
 MainWindow::MainWindow(QWidget *parent)
@@ -27,11 +28,17 @@ MainWindow::MainWindow(QWidget *parent)
     isRun = false;
     LoginWin = new DatabaseLogin;
     LoginWin->show();
+    //this->show();
     UserWin = new FormUser;
     UserWin->userInfoInit();
     classInfo = new FormUser;
     classInfo->userClassInit();
-    classInfo->show();
+    applyInfo = new FormUser;
+    applyInfo->applyInfoInit();
+
+    caoZuo = new FormUser;
+    caoZuo->userCaoZuoInit();
+    //classInfo->show();
     TableWin = new FormTable;
     TableWin->classInfoInit();
     ExitWin = new FormExit;
@@ -40,8 +47,12 @@ MainWindow::MainWindow(QWidget *parent)
     admwin = new AdmWin;
     //admwin->show();
     ChanUser = new UserChan;
+    ChanUser->UserChanInit();
     alretWin = new alret;
     EditUser = new UserEdit;
+    EditUser->editWinInit();
+    addWin = new UserEdit;
+    addWin->addWinInit();
     //userinfopage->show();
 
     db = QSqlDatabase::addDatabase("QMYSQL");
@@ -164,6 +175,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->stackedWidget->addWidget(UserWin);
     ui->stackedWidget->addWidget(TableWin);
     ui->stackedWidget->addWidget(classInfo);
+    ui->stackedWidget->addWidget(applyInfo);
+    ui->stackedWidget->addWidget(caoZuo);
     ui->stackedWidget->addWidget(ExitWin);//添加widget到stackedwidget中成为新的页面
     ui->stackedWidget->setCurrentWidget(UserWin);//设置默认页面为显示页面
     connect(ui->listWidget,SIGNAL(clicked(QModelIndex)),this,SLOT(showPage(QModelIndex)));
@@ -183,7 +196,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->HighBtn->setText(tr("高级"));
     ui->NewBtn->setText(tr("新建"));
     ui->EditBtn->setText(tr("编辑"));
-    ui->DeleBtn->setText(tr("删除"));
+    ui->DeleBtn->setText(tr("刷新"));
     ui->UpPageBtn->setToolTip(tr("上一页"));
     ui->DownPageBtn->setToolTip(tr("下一页"));
     ui->SearBtn->setIcon(QIcon(":/res/shaixuan.png"));
@@ -239,10 +252,13 @@ connect(ui->EditBtn,SIGNAL(clicked(bool)),this,SLOT(editBtnFunc()));
 
 connect(UserWin,SIGNAL(showUserInfo()),this,SLOT(showModel()));
 connect(UserWin,SIGNAL(editUserInfo()),this,SLOT(editUserInfo()));
-//connect(this,SIGNAL(change()),UserWin,SLOT(change()));
+connect(applyInfo,SIGNAL(showUserInfo()),this,SLOT(newAddWin()));
+connect(applyInfo,SIGNAL(editUserInfo()),this,SLOT(showInfo()));
 
 connect(TableWin,SIGNAL(showTable()),this,SLOT(showModel()));
 connect(ExitWin,SIGNAL(ExitApp()),this,SLOT(windowClosed()));
+QDateTime current_date_time =QDateTime::currentDateTime();
+QString current_date =current_date_time.toString("yyyy.MM.dd hh:mm:ss.zzz ddd");
 }
 
 MainWindow::~MainWindow()
@@ -253,6 +269,8 @@ MainWindow::~MainWindow()
 void MainWindow::receiveStu()
 {
     MainWindow::userType = 1;
+    QDateTime current_date_time =QDateTime::currentDateTime();
+    QString current_date =current_date_time.toString("yyyy.MM.dd hh:mm:ss.zzz ddd");
     //qDebug() <<"stu" << MainWindow::UserInfo.at(0) << MainWindow::UserInfo.at(1) << endl;
     QSqlQuery sql;
     QString strSql = QString("select * from student where student_number='%1' && password='%2';").arg(MainWindow::UserInfo.at(0)).arg(MainWindow::UserInfo.at(1));
@@ -278,6 +296,9 @@ void MainWindow::receiveStu()
                 isMaxWindow = true;
                 isHalfWindow = false;
                 isRun = true;
+                strSql = QString("insert into loginrecord values('%1','%2','%3','%4','%5');").arg(1).arg(MainWindow::UserInfo.at(0).arg(MainWindow::UserInfo.at(1)).arg(current_date).arg(0));
+                sqlFlag = sql.exec(strSql);
+                qDebug() << sqlFlag << endl;
                 LoginWin->hide();
             }
         }
@@ -556,20 +577,47 @@ void MainWindow::editBtnFunc()
 
 void MainWindow::showPage(const QModelIndex &index)//显示页面，实现页面切换的槽函数的实现
 {
-    int i = index.row();//获取列表当前行号，从0开始
-    qDebug()<<index << " " << i << endl;;
-    switch(i)//选择判断是第几行，相应改变stackedwidget的页面显示
+    MainWindow::index = index.row();//获取列表当前行号，从0开始
+    qDebug()<<MainWindow::index << " " << MainWindow::index << endl;;
+    switch(MainWindow::index)//选择判断是第几行，相应改变stackedwidget的页面显示
     {
     case 0: ui->stackedWidget->setCurrentWidget(UserWin);break;
     case 1: ui->stackedWidget->setCurrentWidget(TableWin);break;
     case 2: ui->stackedWidget->setCurrentWidget(classInfo);break;
-    //case 3: ui->stackedWidget->setCurrentWidget(InputWin);break;
-    //case 4: ui->stackedWidget->setCurrentWidget(InputWin);break;
+    case 3: ui->stackedWidget->setCurrentWidget(applyInfo);break;
+    case 4: ui->stackedWidget->setCurrentWidget(caoZuo);break;
     case 5: ui->stackedWidget->setCurrentWidget (ExitWin);break;
     default: ui->stackedWidget->setCurrentWidget(UserWin);break;
     }
 }
 
+void MainWindow::newAddWin()
+{
+    addWin->show();
+}
+
+void MainWindow::showInfo()
+{
+    qDebug() << "99999" ;
+    model = new QMySqlQueryModel(this);
+    ui->tableView->verticalHeader()->hide();//不显示序号
+    model->setQuery(QString("select * from application where application_num='%1';").arg(MainWindow::UserInfo.at(0)));
+
+    model->setHeaderData(0,Qt::Horizontal,tr("申请人编号"));
+    model->setHeaderData(1,Qt::Horizontal,tr("申请人姓名"));
+    model->setHeaderData(2,Qt::Horizontal,tr("申请时间"));
+    model->setHeaderData(3,Qt::Horizontal,tr("申请教室"));
+    model->setHeaderData(4,Qt::Horizontal,tr("申请原因"));
+    model->setHeaderData(5,Qt::Horizontal,tr("状态"));
+    ui->tableView->setModel(model);//放数据
+    ui->tableView->setColumnWidth(0,180);
+    ui->tableView->setColumnWidth(1,180);
+    ui->tableView->setColumnWidth(2,180);
+    ui->tableView->setColumnWidth(3,220);
+    ui->tableView->setColumnWidth(4,180);
+    ui->tableView->setColumnWidth(5,220);
+
+}
 void MainWindow::showModel()
 {
     //利用MVC将数据库表内容显示在tableView上

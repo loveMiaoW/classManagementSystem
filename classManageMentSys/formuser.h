@@ -17,6 +17,8 @@ public:
     void shenHeInfoInit();
     void userInfoInit();
     void userClassInit();
+    void applyInfoInit();
+    void userCaoZuoInit();
 private slots:
     void userInfo();
     void userInfoEdit();
